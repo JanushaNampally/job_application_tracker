@@ -1,0 +1,291 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Analytics - Job Application Tracker{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="mb-4">
+        <h1 class="h3 fw-bold mb-2">
+            <i class="bi bi-pie-chart text-primary"></i> Analytics Dashboard
+        </h1>
+        <p class="text-muted">Comprehensive insights into your job application journey</p>
+    </div>
+
+    <!-- Key Metrics -->
+    <div class="row g-3 mb-5">
+        <div class="col-md-6 col-lg-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <p class="text-muted small mb-1">Total Applications</p>
+                    <h3 class="mb-0">{{ total_applications }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <p class="text-muted small mb-1">Success Rate</p>
+                    <h3 class="mb-0">
+                        {% if total_applications > 0 %}
+                            {{ offers|add:accepted }}
+                        {% else %}
+                            0
+                        {% endif %}
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <p class="text-muted small mb-1">Interview Rate</p>
+                    <h3 class="mb-0">{{ interviews }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <p class="text-muted small mb-1">Using Resumes</p>
+                    <h3 class="mb-0">{{ total_with_resume }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row 1 -->
+    <div class="row g-3 mb-5">
+        <!-- Status Distribution -->
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-header bg-primary text-white">
+                    <h6 class="mb-0"><i class="bi bi-pie-chart"></i> Applications by Status</h6>
+                </div>
+                <div class="card-body" style="height: 400px;">
+                    <canvas id="statusChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Job Type Distribution -->
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-header bg-success text-white">
+                    <h6 class="mb-0"><i class="bi bi-bar-chart"></i> Applications by Job Type</h6>
+                </div>
+                <div class="card-body" style="height: 400px;">
+                    <canvas id="jobTypeChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row 2 -->
+    <div class="row g-3 mb-5">
+        <!-- Monthly Trend -->
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-header bg-info text-white">
+                    <h6 class="mb-0"><i class="bi bi-graph-up"></i> Applications by Month</h6>
+                </div>
+                <div class="card-body" style="height: 350px;">
+                    <canvas id="monthlyChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Company Wise -->
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-header bg-warning text-dark">
+                    <h6 class="mb-0"><i class="bi bi-building"></i> Top 10 Companies</h6>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover mb-0">
+                            <tbody>
+                                {% for company in company_data %}
+                                <tr>
+                                    <td>{{ company.company_name }}</td>
+                                    <td class="text-end"><strong>{{ company.count }}</strong></td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td class="text-muted text-center py-3">No data available</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Resume Version Analytics -->
+    {% if resume_version_data %}
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-secondary text-white">
+                    <h6 class="mb-0"><i class="bi bi-file-earmark-pdf"></i> Resume Version Performance</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Resume Version</th>
+                                    <th>Applications</th>
+                                    <th>Usage %</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for resume in resume_version_data %}
+                                <tr>
+                                    <td><strong>{{ resume.resume_version }}</strong></td>
+                                    <td>{{ resume.count }}</td>
+                                    <td>
+                                        {% if total_with_resume > 0 %}
+                                            {{ resume.count|multiply:100|divide:total_with_resume|floating_point_format }}%
+                                        {% else %}
+                                            0%
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Status Breakdown Table -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-dark text-white">
+                    <h6 class="mb-0"><i class="bi bi-list"></i> Detailed Status Breakdown</h6>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Status</th>
+                                    <th class="text-end">Count</th>
+                                    <th class="text-end">Percentage</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in status_data %}
+                                <tr>
+                                    <td>
+                                        <span class="badge bg-{% if item.status == 'Applied' %}info{% elif item.status == 'Rejected' %}danger{% elif item.status == 'Offer' or item.status == 'Accepted' %}success{% elif item.status == 'Interview' %}warning{% else %}secondary{% endif %}">
+                                            {{ item.status }}
+                                        </span>
+                                    </td>
+                                    <td class="text-end"><strong>{{ item.count }}</strong></td>
+                                    <td class="text-end">
+                                        {% if total_applications > 0 %}
+                                            {{ item.count|multiply:100|divide:total_applications|floating_point_format }}%
+                                        {% else %}
+                                            0%
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Status Distribution Chart
+    const statusCtx = document.getElementById('statusChart').getContext('2d');
+    new Chart(statusCtx, {
+        type: 'pie',
+        data: {
+            labels: [{% for item in status_data %}'{{ item.status }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+            datasets: [{
+                data: [{% for item in status_data %}{{ item.count }}{% if not forloop.last %},{% endif %}{% endfor %}],
+                backgroundColor: [
+                    '#0dcaf0', '#0d6efd', '#20c997', '#ffc107',
+                    '#6f42c1', '#dc3545', '#198754', '#28a745'
+                ],
+                borderWidth: 2,
+                borderColor: '#fff'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'bottom' }
+            }
+        }
+    });
+
+    // Job Type Chart
+    const jobCtx = document.getElementById('jobTypeChart').getContext('2d');
+    new Chart(jobCtx, {
+        type: 'doughnut',
+        data: {
+            labels: [{% for item in job_type_data %}'{{ item.job_type }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+            datasets: [{
+                data: [{% for item in job_type_data %}{{ item.count }}{% if not forloop.last %},{% endif %}{% endfor %}],
+                backgroundColor: ['#0d6efd', '#0dcaf0', '#198754', '#ffc107', '#fd7e14', '#dc3545']
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'bottom' }
+            }
+        }
+    });
+
+    // Monthly Trend Chart
+    const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
+    new Chart(monthlyCtx, {
+        type: 'line',
+        data: {
+            labels: [{{ monthly_data.keys|join:", " }}],
+            datasets: [{
+                label: 'Applications',
+                data: [{{ monthly_data.values|join:", " }}],
+                borderColor: '#0d6efd',
+                backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                fill: true,
+                tension: 0.3,
+                borderWidth: 3
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { stepSize: 1 }
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

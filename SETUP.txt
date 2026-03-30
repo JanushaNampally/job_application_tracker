@@ -1,0 +1,293 @@
+# SETUP & RUN INSTRUCTIONS
+# Job Application Tracker - Complete Setup Guide
+
+## ============================================
+## STEP 1: INSTALL DEPENDENCIES
+## ============================================
+
+# Windows:
+pip install -r requirements.txt
+
+# or macOS/Linux:
+pip3 install -r requirements.txt
+
+
+## ============================================
+## STEP 2: RUN MIGRATIONS (Create Database)
+## ============================================
+
+# Apply all migrations
+python manage.py migrate
+
+# If there are any migration errors:
+python manage.py makemigrations
+python manage.py migrate
+
+
+## ============================================
+## STEP 3: CREATE SUPERUSER (Admin Account)
+## ============================================
+
+python manage.py createsuperuser
+
+# Follow the prompts:
+# - Username: (e.g., admin)
+# - Email: (e.g., admin@example.com)
+# - Password: (choose a strong password)
+# - Confirm password: (repeat password)
+
+
+## ============================================
+## STEP 4: COLLECT STATIC FILES (Optional)
+## ============================================
+
+python manage.py collectstatic --noinput
+
+
+## ============================================
+## STEP 5: RUN THE APPLICATION
+## ============================================
+
+python manage.py runserver
+
+# The server will start at: http://127.0.0.1:8000
+
+# To run on a different port:
+python manage.py runserver 8001
+
+
+## ============================================
+## STEP 6: ACCESS THE APPLICATION
+## ============================================
+
+# Main Application:
+# Open browser and go to: http://127.0.0.1:8000
+
+# Admin Panel:
+# Go to: http://127.0.0.1:8000/admin
+# Login with superuser credentials
+
+
+## ============================================
+## FIRST TIME USAGE
+## ============================================
+
+1. Register a new account at: http://127.0.0.1:8000/accounts/register/
+   OR
+   Login with superuser account you created
+
+2. Go to Dashboard: http://127.0.0.1:8000/
+
+3. Click "Quick Add" or "Add Application" to start tracking
+
+4. View analytics at: http://127.0.0.1:8000/analytics/
+
+
+## ============================================
+## USEFUL DEVELOPMENT COMMANDS
+## ============================================
+
+# Create migrations for model changes:
+python manage.py makemigrations
+
+# Check for Django project issues:
+python manage.py check
+
+# Access Django shell for testing:
+python manage.py shell
+
+# Show all available URLs:
+python manage.py show_urls
+
+# Create a database backup:
+# (Simply copy db.sqlite3 file)
+
+# Reset entire database (CAUTION!):
+# 1. Delete db.sqlite3
+# 2. python manage.py migrate
+# 3. Create new superuser
+
+
+## ============================================
+## PRODUCTION DEPLOYMENT
+## ============================================
+
+# 1. Update settings.py:
+#    - Set DEBUG = False
+#    - Add your domain to ALLOWED_HOSTS
+#    - Generate strong SECRET_KEY
+
+# 2. Collect static files:
+python manage.py collectstatic
+
+# 3. Use production server (Gunicorn):
+pip install gunicorn
+gunicorn job_application_tracker.wsgi:application
+
+# 4. Set up database (PostgreSQL recommended):
+#    - Create PostgreSQL database
+#    - Update DATABASES in settings.py
+#    - Run migrations
+
+
+## ============================================
+## TROUBLESHOOTING
+## ============================================
+
+# Error: Port 8000 already in use
+python manage.py runserver 8001
+
+# Error: Database locked
+# - Stop the server (Ctrl+C)
+# - Delete db.sqlite3 file
+# - Run: python manage.py migrate
+# - Create new superuser
+
+# Error: Module not found
+pip install -r requirements.txt --force-reinstall
+
+# Error: Static files not loading
+python manage.py collectstatic --noinput
+
+# Error: "No such table" or migration errors
+python manage.py makemigrations applications
+python manage.py migrate
+
+
+## ============================================
+## DEFAULT ADMIN CREDENTIALS
+## ============================================
+
+# After running createsuperuser, use the username
+# and password you created. For development:
+# 
+# Username: admin
+# Password: (your choice)
+#
+# Save these credentials securely!
+
+
+## ============================================
+## APPLICATION FEATURES QUICK ACCESS
+## ============================================
+
+# Dashboard: http://127.0.0.1:8000/
+# All Applications: http://127.0.0.1:8000/applications/
+# Add New Application: http://127.0.0.1:8000/create/
+# Analytics: http://127.0.0.1:8000/analytics/
+# Admin Panel: http://127.0.0.1:8000/admin/
+# Login: http://127.0.0.1:8000/accounts/login/
+# Logout: http://127.0.0.1:8000/accounts/logout/
+
+
+## ============================================
+## FEATURES WALKTHROUGH
+## ============================================
+
+1. QUICK ADD APPLICATION:
+   - Click "Quick Add" button on dashboard
+   - Enter: Company, Role, Date, Job Type
+   - Click "Add" - done in seconds!
+
+2. FULL APPLICATION ENTRY:
+   - Click "Add Application"
+   - Fill all fields (Company, Role, Compensation, etc.)
+   - Set follow-up date
+   - Add notes/feedback
+   - Click "Save Application"
+
+3. FILTER APPLICATIONS:
+   - Use search fields for company/role
+   - Filter by status or job type
+   - Filter by date range
+   - Export results to CSV/Excel
+
+4. UPDATE STATUS:
+   - Click on status dropdown in table
+   - Select new status
+   - Saves automatically!
+
+5. VIEW ANALYTICS:
+   - Click "Analytics" in navigation
+   - See charts for status distribution
+   - Check monthly trends
+   - Review company-wise stats
+
+6. EXPORT DATA:
+   - Click "CSV" or "Excel" button
+   - Download formatted file
+   - Use in other tools
+
+
+## ============================================
+## ENVIRONMENT SETUP (OPTIONAL)
+## ============================================
+
+# Create .env file in project root:
+SECRET_KEY=your-secret-key-here
+DEBUG=True
+ALLOWED_HOSTS=localhost,127.0.0.1
+
+# Install python-decouple for .env support:
+pip install python-decouple
+
+
+## ============================================
+## DATABASE BACKUP & RESTORE
+## ============================================
+
+# Backup:
+# Copy db.sqlite3 file to safe location
+
+# Restore:
+# Paste db.sqlite3 back to project root
+# python manage.py runserver
+
+
+## ============================================
+## SUCCESS INDICATORS
+## ============================================
+
+✓ Server running at http://127.0.0.1:8000
+✓ Can create account
+✓ Can add applications
+✓ Can see dashboard
+✓ Can view analytics
+✓ Can export data
+✓ Admin panel accessible
+
+If all above work, you're all set! 🚀
+
+
+## ============================================
+## SUPPORT & DOCUMENTATION
+## ============================================
+
+# Django Documentation:
+https://docs.djangoproject.com/
+
+# Bootstrap:
+https://getbootstrap.com/docs/
+
+# Chart.js:
+https://www.chartjs.org/docs/
+
+# Python:
+https://docs.python.org/3/
+
+
+## ============================================
+## NEXT STEPS
+## ============================================
+
+1. Read README.md for full documentation
+2. Explore the admin panel
+3. Add some test applications
+4. Try filtering and exporting
+5. Check out analytics dashboard
+6. Deploy to production when ready
+
+
+Happy tracking! 🎯
+
+For issues, check the README.md or Django logs.

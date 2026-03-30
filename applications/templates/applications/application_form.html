@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ title }} - Job Application Tracker{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        {% if form.instance.pk %}
+                            <i class="bi bi-pencil-square"></i> Edit Application
+                        {% else %}
+                            <i class="bi bi-plus-circle"></i> Add New Application
+                        {% endif %}
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post" class="needs-validation">
+                        {% csrf_token %}
+                        
+                        <!-- Basic Information Section -->
+                        <h6 class="mb-3 mt-4 fw-bold text-primary border-bottom pb-2">
+                            <i class="bi bi-info-circle"></i> Basic Information
+                        </h6>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="{{ form.company_name.id_for_label }}" class="form-label">{{ form.company_name.label }} *</label>
+                                {{ form.company_name }}
+                                {% if form.company_name.errors %}
+                                    <div class="text-danger small mt-1">{{ form.company_name.errors }}</div>
+                                {% endif %}
+                                <small class="text-muted d-block mt-1">e.g., Google, Microsoft, Amazon</small>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ form.role.id_for_label }}" class="form-label">{{ form.role.label }} *</label>
+                                {{ form.role }}
+                                {% if form.role.errors %}
+                                    <div class="text-danger small mt-1">{{ form.role.errors }}</div>
+                                {% endif %}
+                                <small class="text-muted d-block mt-1">e.g., Software Engineer, Data Scientist</small>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="{{ form.date_applied.id_for_label }}" class="form-label">{{ form.date_applied.label }} *</label>
+                                {{ form.date_applied }}
+                                {% if form.date_applied.errors %}
+                                    <div class="text-danger small mt-1">{{ form.date_applied.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ form.job_type.id_for_label }}" class="form-label">{{ form.job_type.label }} *</label>
+                                {{ form.job_type }}
+                                {% if form.job_type.errors %}
+                                    <div class="text-danger small mt-1">{{ form.job_type.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Compensation Section -->
+                        <h6 class="mb-3 mt-4 fw-bold text-primary border-bottom pb-2">
+                            <i class="bi bi-currency-dollar"></i> Compensation
+                        </h6>
+
+                        <div class="mb-3">
+                            <label for="{{ form.ctc.id_for_label }}" class="form-label">{{ form.ctc.label }}</label>
+                            {{ form.ctc }}
+                            {% if form.ctc.errors %}
+                                <div class="text-danger small mt-1">{{ form.ctc.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Application Link Section -->
+                        <h6 class="mb-3 mt-4 fw-bold text-primary border-bottom pb-2">
+                            <i class="bi bi-link-45deg"></i> Application Details
+                        </h6>
+
+                        <div class="mb-3">
+                            <label for="{{ form.application_link.id_for_label }}" class="form-label">{{ form.application_link.label }}</label>
+                            {{ form.application_link }}
+                            {% if form.application_link.errors %}
+                                <div class="text-danger small mt-1">{{ form.application_link.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Status & Follow-up Section -->
+                        <h6 class="mb-3 mt-4 fw-bold text-primary border-bottom pb-2">
+                            <i class="bi bi-list-check"></i> Status & Follow-up
+                        </h6>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="{{ form.status.id_for_label }}" class="form-label">{{ form.status.label }} *</label>
+                                {{ form.status }}
+                                {% if form.status.errors %}
+                                    <div class="text-danger small mt-1">{{ form.status.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ form.follow_up_date.id_for_label }}" class="form-label">{{ form.follow_up_date.label }}</label>
+                                {{ form.follow_up_date }}
+                                {% if form.follow_up_date.errors %}
+                                    <div class="text-danger small mt-1">{{ form.follow_up_date.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Resume & Notes Section -->
+                        <h6 class="mb-3 mt-4 fw-bold text-primary border-bottom pb-2">
+                            <i class="bi bi-file-earmark-pdf"></i> Resume & Notes
+                        </h6>
+
+                        <div class="mb-3">
+                            <label for="{{ form.resume_version.id_for_label }}" class="form-label">{{ form.resume_version.label }}</label>
+                            {{ form.resume_version }}
+                            {% if form.resume_version.errors %}
+                                <div class="text-danger small mt-1">{{ form.resume_version.errors }}</div>
+                            {% endif %}
+                            <small class="text-muted d-block mt-1">e.g., Resume_V1_AI_ML, Resume_V2_FullStack</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.response_notes.id_for_label }}" class="form-label">{{ form.response_notes.label }}</label>
+                            {{ form.response_notes }}
+                            {% if form.response_notes.errors %}
+                                <div class="text-danger small mt-1">{{ form.response_notes.errors }}</div>
+                            {% endif %}
+                            <small class="text-muted d-block mt-1">HR Response / OA Link / Interview Feedback / Recruiter Messages</small>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="d-flex gap-2 justify-content-between mt-5">
+                            <a href="{% url 'applications:applications_list' %}" class="btn btn-outline-secondary">
+                                <i class="bi bi-x-circle"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary px-4">
+                                <i class="bi bi-check-circle"></i> Save Application
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Helpful Tips -->
+            {% if not form.instance.pk %}
+            <div class="card border-info mt-4">
+                <div class="card-header bg-info text-white">
+                    <h6 class="mb-0"><i class="bi bi-lightbulb"></i> Pro Tips</h6>
+                </div>
+                <div class="card-body small">
+                    <ul class="mb-0">
+                        <li>Keep track of the exact date you applied</li>
+                        <li>Set follow-up dates to get timely reminders</li>
+                        <li>Maintain different resume versions for different roles</li>
+                        <li>Store OA links and interview feedback in notes</li>
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
